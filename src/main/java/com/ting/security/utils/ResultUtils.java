@@ -1,7 +1,15 @@
 package com.ting.security.utils;
 
+import com.alibaba.fastjson.JSON;
 import com.ting.security.common.ResultEnum;
 import com.ting.security.vo.ResultVO;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.MediaType;
+
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.nio.charset.StandardCharsets;
 
 /**
  * 统一参数封装
@@ -10,7 +18,8 @@ import com.ting.security.vo.ResultVO;
  * @version 1.0
  * @date 2021/9/30
  */
-public class ResultUtils<T> {
+@Slf4j
+public final class ResultUtils {
 
     public static <T> ResultVO<T> success(T data) {
         return buildResultByEnum(ResultEnum.SUCCESS, data);
@@ -51,4 +60,17 @@ public class ResultUtils<T> {
         return resultVO;
     }
 
+
+    public static <T> void buildResultByResponse(ResultVO<T> resultVO, HttpServletResponse response) {
+        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+        response.setCharacterEncoding(StandardCharsets.UTF_8.name());
+        try {
+            PrintWriter writer = response.getWriter();
+            writer.write(JSON.toJSONString(resultVO));
+            writer.flush();
+            writer.close();
+        } catch (IOException e) {
+            log.error("response写入失败", e);
+        }
+    }
 }

@@ -3,6 +3,7 @@ package com.ting.security.domain;
 import com.baomidou.mybatisplus.annotation.*;
 
 import java.util.Date;
+
 import lombok.Data;
 
 @Data
